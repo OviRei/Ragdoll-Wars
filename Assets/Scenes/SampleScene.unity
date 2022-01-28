@@ -885,7 +885,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &346229824
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2345,7 +2345,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &946739014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3057,7 +3057,7 @@ MonoBehaviour:
   roomListItemPrefab: {fileID: 4806680512813121272, guid: 3b4c597b48c04014e830992feee46e9b, type: 3}
   playerListContent: {fileID: 143738007}
   playerListItemPrefab: {fileID: 1059746464982793389, guid: 87417258c89724040a33d212bdd1377a, type: 3}
-  startGameButton: {fileID: 0}
+  startGameButton: {fileID: 1041991718}
 --- !u!114 &1246837713
 MonoBehaviour:
   m_ObjectHideFlags: 0
