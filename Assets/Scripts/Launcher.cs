@@ -38,6 +38,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         MenuManager.Instance.OpenMenu("MainMenu");
+        PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
     }
 
     public void CreateLobby()
@@ -54,14 +55,14 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         MenuManager.Instance.OpenMenu("RoomMenu");
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
-        PhotonNetwork.NickName = "Player " + Random.Range(0, 1000);
 
-        foreach(Transform child in roomListContent)
+        foreach(Transform child in playerListContent)
         {
             Destroy(child.gameObject);
         }
 
         Player[] players = PhotonNetwork.PlayerList;
+        
         for(int i = 0; i < players.Length; i++)
         {
             Instantiate(playerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
@@ -107,6 +108,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         }
         for(var i = 0; i < roomList.Count; i++)
         {
+            if(roomList[i].RemovedFromList) continue;
             Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomList[i]);
         }
     }
