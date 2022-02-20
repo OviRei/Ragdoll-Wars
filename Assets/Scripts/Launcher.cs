@@ -18,13 +18,16 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] private Transform playerListContent;
     [SerializeField] private GameObject playerListItemPrefab;
     [SerializeField] private GameObject startGameButton;
+    [SerializeField] private GameObject gameModeButton;
+    [SerializeField] private GameObject RagdollModel;
+    [SerializeField] private string gameMode;
 
-    void Awake()
+    private void Awake()
 	{
 		Instance = this;
 	}
 
-    void Start()
+    private void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
     }
@@ -38,6 +41,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         MenuManager.Instance.OpenMenu("MainMenu");
+        RagdollModel.SetActive(true);
         PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
     }
 
@@ -69,11 +73,13 @@ public class Launcher : MonoBehaviourPunCallbacks
         }
 
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+        gameModeButton.SetActive(PhotonNetwork.IsMasterClient);
     }
 
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+        gameModeButton.SetActive(PhotonNetwork.IsMasterClient);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -120,6 +126,15 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public void StartGame()
     {
-        PhotonNetwork.LoadLevel(1);
+        if(gameMode == "TA") PhotonNetwork.LoadLevel(1);
+    }
+
+    public void HandleInputData(int val)
+    {
+        if(val == 0) gameMode = "FFA"; //Free For ALl
+        else if(val == 1) gameMode = "TDM"; //Team Death Match
+        else if(val == 2) gameMode = "1TC"; //One in the chamber
+        else if(val == 3) gameMode = "GG"; //Gun Game
+        else if(val == 4) gameMode = "TA"; //Test Area
     }
 }

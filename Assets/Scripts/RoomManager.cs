@@ -9,7 +9,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 {
     public static RoomManager Instance;
 
-    void Awake()
+    private void Awake()
     {
         if(Instance)
         {
