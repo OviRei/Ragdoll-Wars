@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
 
@@ -16,8 +17,12 @@ public class AutoGun : Gun
     [SerializeField] private TextMeshProUGUI ammoText;
     private bool isReloading;
     public bool canShoot;
+    [SerializeField] private Image crosshair;
+    [SerializeField] private PlayerLook playerLook;
+    [SerializeField] private Recoil recoil;
 
-    private bool test;
+    private bool aim;
+    private bool canAim = true;
 
     private void Start()
     {
@@ -33,20 +38,44 @@ public class AutoGun : Gun
 
         ammoText.text = $"{currentAmmo}/{((GunInfo)itemInfo).magSize}";
 
-        if(Input.GetKeyDown(KeyCode.R) || currentAmmo <= 0)
-        {
-            if(isReloading) return;
-            StartCoroutine(Reload());
-        }
+        if(aim) cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 40, 15 * Time.deltaTime);
+        else cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 70, 15 * Time.deltaTime);
+
+        if(currentAmmo <= 0) ReloadGun();
     }
 
     public override void Use()
     {
-        if(Time.time >= nextTimeToFire && currentAmmo > 0)
+        if(Time.time >= nextTimeToFire && currentAmmo > 0 && !isReloading)
         {
             nextTimeToFire = Time.time + 1f / _fireRate;
             Shoot();
         }
+    }
+
+    public override void ReloadGun()
+    {
+        if(isReloading || currentAmmo >= ((GunInfo)itemInfo).magSize) return;
+        canAim = false;
+        StartCoroutine(Reload());
+    }
+
+    public override void Aim()
+    {
+        aim = true;
+        playerLook.sensX = playerLook.sensX / 2.5f;
+        playerLook.sensY = playerLook.sensY / 2.5f;
+        //crosshair.enabled = false;    
+        gameObject.GetComponent<Animator>().Play("Aim");
+    }
+
+    public override void UnAim()
+    {
+        aim = false;
+        playerLook.sensX = playerLook.sensX * 2.5f;
+        playerLook.sensY = playerLook.sensY * 2.5f;
+        gameObject.GetComponent<Animator>().Play("UnAim");
+        //crosshair.enabled = true;
     }
 
     public override bool IsGunAuto()
@@ -74,10 +103,13 @@ public class AutoGun : Gun
     private IEnumerator Reload()
     {
         isReloading = true;
+        gameObject.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Animator>().Play("UnInsertMag");
 
         yield return new WaitForSeconds(((GunInfo)itemInfo).reloadTime);
 
+        gameObject.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Animator>().Play("InsertMag");
         currentAmmo = ((GunInfo)itemInfo).magSize;
         isReloading = false;
+        canAim = true;
     }
 }

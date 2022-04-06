@@ -125,6 +125,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		else if(Input.GetKeyDown(dashKey) && canDash) Dash();
 
 		MyInput();
+		GunInput();
 		ControlDrag();
 		ControlSpeed();
 		StartCoroutine(PlayerVelocity());
@@ -137,9 +138,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
 				break;
 			}
 		}
-
-		if(Input.GetMouseButton(0) && items[itemIndex].IsGunAuto()) items[itemIndex].Use();
-		else if(Input.GetMouseButtonDown(0) && !items[itemIndex].IsGunAuto()) items[itemIndex].Use();
 
 		if(transform.position.y < -10f) StartCoroutine(playerManager.Die());
 	}
@@ -157,6 +155,17 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		verticalMovement = Input.GetAxisRaw("Vertical");
 
 		moveDirection = playerModel.forward * verticalMovement + playerModel.right * horizontalMovement;
+	}
+
+	private void GunInput()
+	{
+		if(Input.GetMouseButtonDown(1)) items[itemIndex].Aim();
+		if(Input.GetMouseButtonUp(1)) items[itemIndex].UnAim();
+
+		if(Input.GetKeyDown(KeyCode.R)) items[itemIndex].ReloadGun();
+
+		if(Input.GetMouseButton(0) && items[itemIndex].IsGunAuto()) items[itemIndex].Use();
+		else if(Input.GetMouseButtonDown(0) && !items[itemIndex].IsGunAuto()) items[itemIndex].Use();
 	}
 
 	private void MovePlayer()
@@ -286,6 +295,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
 		}
 
 		previousItemIndex = itemIndex;
+
+		//items[itemIndex].UnAim();
 
 		if(PV.IsMine)
 		{

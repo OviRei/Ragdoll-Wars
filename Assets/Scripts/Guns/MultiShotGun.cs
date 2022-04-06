@@ -33,4 +33,22 @@ public class MultiShotGun : Gun
             else if(hit.collider.tag == "Body") hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(((GunInfo)itemInfo).baseDamage);
         }
     }
+
+    public override void Aim()
+    {
+        gameObject.GetComponent<Animator>().Play("Aim");
+        //crosshair.enabled = false;    
+    }
+
+    public override void UnAim()
+    {
+        gameObject.GetComponent<Animator>().Play("UnAim");
+        //crosshair.enabled = true;
+    }
+
+    public override void ReloadGun()
+    {
+        //if(isReloading || currentAmmo >= 0) return;
+        //StartCoroutine(Reload());
+    }
 }
